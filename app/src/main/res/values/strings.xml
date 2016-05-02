@@ -1,0 +1,24 @@
+<resources>
+    <string name="app_name">SHAREipo</string>
+
+    <string name="desc_profile_icon">Profile Icon</string>
+
+    <string name="action_profile">Profile</string>
+
+    <string name="title_activity_profile">Profile</string>
+    <string name="title_activity_file_picker">Pick Files</string>
+    <string name="title_activity_share_files">Select Users</string>
+    <string name="title_activity_shared_files">Shared Files</string>
+    <string name="title_activity_un_share">UnShare</string>
+    <string name="title_activity_un_share_user">Select User</string>
+    <string name="title_activity_un_share_file">Select Files</string>
+
+    <string name="name">Name</string>
+    <string name="save">Save</string>
+    <string name="share">Share</string>
+    <string name="shared_files">Shared Files</string>
+    <string name="un_share">UnShare</string>
+    <string name="select_all">Select All</string>
+    <string name="user">User Based</string>
+    <string name="file">File Based</string>
+</resources>

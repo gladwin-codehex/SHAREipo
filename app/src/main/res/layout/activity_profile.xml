@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="in.codehex.shareipo.ProfileActivity">
+
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/appbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+            app:popupTheme="@style/Theme.AppCompat.Light" />
+
+    </android.support.design.widget.AppBarLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/appbar"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:padding="@dimen/secondary_padding">
+
+        <android.support.design.widget.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <EditText
+                android:id="@+id/name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/primary_margin"
+                android:hint="@string/name"
+                android:inputType="textPersonName" />
+
+        </android.support.design.widget.TextInputLayout>
+
+        <TableLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/primary_margin">
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <ImageButton
+                    android:id="@+id/male1"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/primary_margin"
+                    android:layout_weight="1"
+                    android:adjustViewBounds="true"
+                    android:background="?attr/selectableItemBackground"
+                    android:contentDescription="@string/desc_profile_icon"
+                    android:padding="@dimen/secondary_padding"
+                    android:src="@drawable/male1" />
+
+                <ImageButton
+                    android:id="@+id/male2"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/primary_margin"
+                    android:layout_weight="1"
+                    android:adjustViewBounds="true"
+                    android:background="?attr/selectableItemBackground"
+                    android:contentDescription="@string/desc_profile_icon"
+                    android:padding="@dimen/secondary_padding"
+                    android:src="@drawable/male2" />
+
+                <ImageButton
+                    android:id="@+id/male3"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/primary_margin"
+                    android:layout_weight="1"
+                    android:adjustViewBounds="true"
+                    android:background="?attr/selectableItemBackground"
+                    android:contentDescription="@string/desc_profile_icon"
+                    android:padding="@dimen/secondary_padding"
+                    android:src="@drawable/male3" />
+
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <ImageButton
+                    android:id="@+id/female1"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/primary_margin"
+                    android:layout_weight="1"
+                    android:adjustViewBounds="true"
+                    android:background="?attr/selectableItemBackground"
+                    android:contentDescription="@string/desc_profile_icon"
+                    android:padding="@dimen/secondary_padding"
+                    android:src="@drawable/female1" />
+
+                <ImageButton
+                    android:id="@+id/female2"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/primary_margin"
+                    android:layout_weight="1"
+                    android:adjustViewBounds="true"
+                    android:background="?attr/selectableItemBackground"
+                    android:contentDescription="@string/desc_profile_icon"
+                    android:padding="@dimen/secondary_padding"
+                    android:src="@drawable/female2" />
+
+                <ImageButton
+                    android:id="@+id/female3"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/primary_margin"
+                    android:layout_weight="1"
+                    android:adjustViewBounds="true"
+                    android:background="?attr/selectableItemBackground"
+                    android:contentDescription="@string/desc_profile_icon"
+                    android:padding="@dimen/secondary_padding"
+                    android:src="@drawable/female3" />
+
+            </TableRow>
+
+        </TableLayout>
+
+        <Button
+            android:id="@+id/save"
+            style="@style/Widget.AppCompat.Button.Colored"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/primary_margin"
+            android:text="@string/save" />
+
+    </LinearLayout>
+
+</RelativeLayout>
