@@ -90,10 +90,11 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
      */
     private void prepareObjects() {
         setSupportActionBar(toolbar);
-        if (getSupportActionBar() != null)
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         if (userPreferences.contains("name")) {
+            if (getSupportActionBar() != null)
+                getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
             imgId = userPreferences.getInt("img_id", 0);
             setBackgroundColor(imgId);
 

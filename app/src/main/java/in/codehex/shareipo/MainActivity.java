@@ -1,8 +1,11 @@
 package in.codehex.shareipo;
 
+import com.nononsenseapps.filepicker.FilePickerActivity;
+
 import android.app.Activity;
 import android.content.ClipData;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -14,8 +17,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
-import com.nononsenseapps.filepicker.FilePickerActivity;
-
 import in.codehex.shareipo.app.Config;
 
 public class MainActivity extends AppCompatActivity {
@@ -23,6 +24,7 @@ public class MainActivity extends AppCompatActivity {
     Toolbar toolbar;
     Button btnShare, btnSharedFiles, btnUnShare;
     Intent intent;
+    SharedPreferences userPreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,41 +86,49 @@ public class MainActivity extends AppCompatActivity {
         btnShare = (Button) findViewById(R.id.share);
         btnSharedFiles = (Button) findViewById(R.id.shared_files);
         btnUnShare = (Button) findViewById(R.id.un_share);
+
+        userPreferences = getSharedPreferences(Config.PREF_USER, MODE_PRIVATE);
     }
 
     /**
      * implement and manipulate the objects
      */
     private void prepareObjects() {
-        setSupportActionBar(toolbar);
+        if (userPreferences.contains("name")) {
+            setSupportActionBar(toolbar);
 
-        btnShare.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                intent = new Intent(MainActivity.this, FilePickerActivity.class);
-                intent.putExtra(FilePickerActivity.EXTRA_ALLOW_MULTIPLE, true);
-                intent.putExtra(FilePickerActivity.EXTRA_ALLOW_CREATE_DIR, true);
-                intent.putExtra(FilePickerActivity.EXTRA_MODE, FilePickerActivity.MODE_FILE);
-                intent.putExtra(FilePickerActivity.EXTRA_START_PATH,
-                        Environment.getExternalStorageDirectory().getPath());
-                startActivityForResult(intent, Config.REQUEST_FILE_CODE);
-            }
-        });
+            btnShare.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    intent = new Intent(MainActivity.this, FilePickerActivity.class);
+                    intent.putExtra(FilePickerActivity.EXTRA_ALLOW_MULTIPLE, true);
+                    intent.putExtra(FilePickerActivity.EXTRA_ALLOW_CREATE_DIR, true);
+                    intent.putExtra(FilePickerActivity.EXTRA_MODE, FilePickerActivity.MODE_FILE);
+                    intent.putExtra(FilePickerActivity.EXTRA_START_PATH,
+                            Environment.getExternalStorageDirectory().getPath());
+                    startActivityForResult(intent, Config.REQUEST_FILE_CODE);
+                }
+            });
 
-        btnSharedFiles.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                intent = new Intent(MainActivity.this, SharedFilesActivity.class);
-                startActivity(intent);
-            }
-        });
+            btnSharedFiles.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    intent = new Intent(MainActivity.this, SharedFilesActivity.class);
+                    startActivity(intent);
+                }
+            });
 
-        btnUnShare.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                intent = new Intent(MainActivity.this, UnShareActivity.class);
-                startActivity(intent);
-            }
-        });
+            btnUnShare.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    intent = new Intent(MainActivity.this, UnShareActivity.class);
+                    startActivity(intent);
+                }
+            });
+        } else {
+            intent = new Intent(MainActivity.this, ProfileActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+        }
     }
 }
