@@ -5,14 +5,17 @@ package in.codehex.shareipo.model;
  */
 public class DeviceItem {
 
-    private String deviceName, deviceAddress, deviceIp;
+    private String deviceName, deviceAddress, deviceIp, userName;
     private boolean isSelected;
+    private int imgId;
 
-    public DeviceItem(String deviceName, String deviceAddress, String deviceIp,
-                      boolean isSelected) {
+    public DeviceItem(String deviceName, String deviceAddress, String deviceIp, String userName,
+                      int imgId, boolean isSelected) {
         this.deviceName = deviceName;
         this.deviceAddress = deviceAddress;
         this.deviceIp = deviceIp;
+        this.userName = userName;
+        this.imgId = imgId;
         this.isSelected = isSelected;
     }
 
@@ -46,5 +49,21 @@ public class DeviceItem {
 
     public void setSelected(boolean isSelected) {
         this.isSelected = isSelected;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public int getImgId() {
+        return imgId;
+    }
+
+    public void setImgId(int imgId) {
+        this.imgId = imgId;
     }
 }

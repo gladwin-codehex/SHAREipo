@@ -17,6 +17,12 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.net.ServerSocket;
+import java.net.Socket;
+
 import in.codehex.shareipo.app.Config;
 
 public class MainActivity extends AppCompatActivity {
@@ -129,6 +135,39 @@ public class MainActivity extends AppCompatActivity {
             intent = new Intent(MainActivity.this, ProfileActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
+        }
+
+        startServer();
+    }
+
+    private void startServer() {
+        Thread thread = new Thread(new Profile());
+        thread.start();
+    }
+
+    private class Profile extends Thread {
+
+        @Override
+        public void run() {
+            try {
+                ServerSocket socket = new ServerSocket(8080);
+                while (true) {
+                    Socket clientSocket = socket.accept();
+                    DataInputStream dis = new DataInputStream(clientSocket.getInputStream());
+                    String msg = dis.readUTF();
+                    if (msg.equals("profile")) {
+                        String profile = userPreferences.getString("name", null) + "," +
+                                userPreferences.getInt("img_id", 0);
+                        DataOutputStream dos = new DataOutputStream(clientSocket.getOutputStream());
+                        dos.writeUTF(profile);
+                    } else {
+                        DataOutputStream dos = new DataOutputStream(clientSocket.getOutputStream());
+                        dos.writeUTF("testing");
+                    }
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 }

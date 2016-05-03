@@ -15,9 +15,12 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.TextView;
-import android.widget.Toast;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import in.codehex.shareipo.hotspot.ClientScanResult;
@@ -55,9 +58,9 @@ public class ShareActivity extends AppCompatActivity implements View.OnClickList
                 break;
             case R.id.share:
                 for (int i = 0; i < deviceItemList.size(); i++)
-                    if (deviceItemList.get(i).isSelected())
-                        Toast.makeText(ShareActivity.this,
-                                deviceItemList.get(i).getDeviceIp(), Toast.LENGTH_SHORT).show();
+                    if (deviceItemList.get(i).isSelected()) {
+
+                    }
                 // TODO: send the shared file detail to the selected users and go back to main activity clearing the activity stack
                 break;
         }
@@ -124,9 +127,30 @@ public class ShareActivity extends AppCompatActivity implements View.OnClickList
                 deviceItemList.clear();
                 adapter.notifyDataSetChanged();
                 for (int i = 0; i < clients.size(); i++) {
-                    deviceItemList.add(i, new DeviceItem(clients.get(i).getDevice(),
-                            clients.get(i).getHWAddr(), clients.get(i).getIpAddr(), false));
-                    adapter.notifyItemInserted(i);
+                    final int ip = i;
+                    new Thread() {
+                        @Override
+                        public void run() {
+                            try {
+                                Socket socket = new Socket(clients.get(ip).getIpAddr(), 8080);
+                                DataOutputStream dos = new DataOutputStream(socket
+                                        .getOutputStream());
+                                dos.writeUTF("profile");
+                                DataInputStream dis = new DataInputStream(socket
+                                        .getInputStream());
+                                String msg = dis.readUTF();
+                                List<String> stringList = Arrays.asList(msg.split(","));
+                                deviceItemList.add(ip, new DeviceItem(clients.get(ip).getDevice(),
+                                        clients.get(ip).getHWAddr(), clients.get(ip).getIpAddr(),
+                                        stringList.get(0), Integer.parseInt(stringList.get(1)),
+                                        false));
+                                adapter.notifyItemInserted(ip);
+                                socket.close();
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }.start();
                 }
             }
         });
@@ -150,19 +174,20 @@ public class ShareActivity extends AppCompatActivity implements View.OnClickList
         }
 
         @Override
-        public void onBindViewHolder(DeviceViewHolder holder, int position) {
+        public void onBindViewHolder(final DeviceViewHolder holder, int position) {
             final DeviceItem deviceItem = deviceItemList.get(position);
 
-            holder.name.setText(deviceItem.getDeviceName());
+            holder.name.setText(deviceItem.getUserName());
             holder.mac.setText(deviceItem.getDeviceAddress());
             holder.ip.setText(deviceItem.getDeviceIp());
+            holder.select.setChecked(deviceItem.isSelected());
             holder.select.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    if (isChecked)
+                    if (isChecked) {
                         deviceItem.setSelected(true);
-                    else deviceItem.setSelected(false);
-                    adapter.notifyDataSetChanged();
+                    } else deviceItem.setSelected(false);
+                    holder.select.setChecked(deviceItem.isSelected());
                 }
             });
         }
