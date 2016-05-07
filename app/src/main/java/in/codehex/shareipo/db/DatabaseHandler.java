@@ -57,8 +57,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             values.put(Config.KEY_MAC_ID, fileItemList.get(i).getMacId());
             values.put(Config.KEY_FILE, fileItemList.get(i).getFile());
             db.insert(Config.TABLE_SHARE, null, values);
-            db.close();
         }
+        db.close();
     }
 
     public void addSharedFiles(List<FileItem> fileItemList) {
@@ -70,8 +70,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             values.put(Config.KEY_MAC_ID, fileItemList.get(i).getMacId());
             values.put(Config.KEY_FILE, fileItemList.get(i).getFile());
             db.insert(Config.TABLE_SHARED, null, values);
-            db.close();
         }
+        db.close();
     }
 
     public List<FileItem> getShareFileList() {
@@ -110,7 +110,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     public List<FileItem> getShareUserList() {
         List<FileItem> fileItemList = new ArrayList<>();
-        String selectQuery = "SELECT * FROM " + Config.TABLE_SHARED
+        String selectQuery = "SELECT * FROM " + Config.TABLE_SHARE
                 + " GROUP BY " + Config.KEY_USER;
 
         SQLiteDatabase db = this.getReadableDatabase();
@@ -128,7 +128,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     public List<FileItem> getShareUserFileList(String user) {
         List<FileItem> fileItemList = new ArrayList<>();
-        String selectQuery = "SELECT * FROM " + Config.TABLE_SHARED
+        String selectQuery = "SELECT * FROM " + Config.TABLE_SHARE
                 + " WHERE " + Config.KEY_MAC_ID + " = ?";
 
         SQLiteDatabase db = this.getReadableDatabase();
@@ -148,7 +148,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
 
         for (int i = 0; i < integerList.size(); i++)
-            db.delete(Config.TABLE_SHARE, Config.KEY_ID + " = ?", new String[]{String.valueOf(i)});
+            db.delete(Config.TABLE_SHARE, Config.KEY_ID + " = ?",
+                    new String[]{String.valueOf(integerList.get(i))});
         db.close();
     }
 

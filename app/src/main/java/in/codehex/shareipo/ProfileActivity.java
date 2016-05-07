@@ -17,7 +17,7 @@ import in.codehex.shareipo.app.Config;
 
 public class ProfileActivity extends AppCompatActivity implements View.OnClickListener {
 
-    static Integer imgId = 0;
+    int imgId = 0;
     Toolbar toolbar;
     EditText editName;
     ImageButton btnMale1, btnMale2, btnMale3, btnFemale1, btnFemale2, btnFemale3;
@@ -98,7 +98,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
             imgId = userPreferences.getInt("img_id", 0);
             setBackgroundColor(imgId);
 
-            String name = userPreferences.getString("name", "bobby");
+            String name = userPreferences.getString("name", null);
             editName.setText(name);
         }
 

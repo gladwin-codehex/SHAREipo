@@ -1,8 +1,11 @@
 package in.codehex.shareipo;
 
+import org.apache.commons.io.output.ByteArrayOutputStream;
+
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -13,6 +16,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,6 +38,16 @@ public class SharedFilesActivity extends AppCompatActivity {
     List<FileItem> fileItemList;
     FileAdapter adapter;
     Intent intent;
+
+    static int getChunk(InputStream inputStr, ByteArrayOutputStream bytes, byte[] buffer) throws
+            IOException {
+        int read = inputStr.read(buffer, 0, 1024);
+        while (read < 1024) {
+            read += inputStr.read(buffer, read, 1024 - read);
+        }
+        bytes.write(buffer);
+        return read;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,13 +106,49 @@ public class SharedFilesActivity extends AppCompatActivity {
         @Override
         public void onBindViewHolder(FileViewHolder holder, int position) {
             final FileItem fileItem = fileItemList.get(position);
-
             holder.name.setText(fileItem.getUser());
-            holder.file.setText(fileItem.getFile());
+            final File file = new File(fileItem.getFile());
+            holder.file.setText(file.getName());
             holder.setClickListener(new ItemClickListener() {
                 @Override
                 public void onClick(View view, int position, boolean isLongClick) {
-                    //TODO: connect to the device and download the file and then open the file using file manager intent
+                    new Thread() {
+                        @Override
+                        public void run() {
+                            try {
+                                Socket socket = new Socket("192.168.43.1", 8082);
+                                DataOutputStream dos = new DataOutputStream(socket
+                                        .getOutputStream());
+                                String path = fileItem.getFile();
+                                dos.writeUTF(path);
+                                DataInputStream dis = new DataInputStream(socket.getInputStream());
+                                int size = dis.readInt();
+                                FileOutputStream fileOutputStream =
+                                        new FileOutputStream(Environment
+                                                .getExternalStorageDirectory()
+                                                + File.separator + file.getName());
+                                InputStream inputStream = socket.getInputStream();
+                                byte[] buffer = new byte[1024];
+                                ByteArrayOutputStream byteArrayOutputStream = new
+                                        ByteArrayOutputStream();
+                                while (size >= 1024) {
+                                    size -= getChunk(inputStream, byteArrayOutputStream, buffer);
+                                    fileOutputStream.write(byteArrayOutputStream.toByteArray());
+                                    byteArrayOutputStream.reset();
+                                }
+
+                                int data;
+                                while ((data = inputStream.read()) != -1)
+                                    byteArrayOutputStream.write(data);
+                                fileOutputStream.write(byteArrayOutputStream.toByteArray());
+                                inputStream.close();
+                                fileOutputStream.close();
+                                socket.close();
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }.start();
                 }
             });
         }

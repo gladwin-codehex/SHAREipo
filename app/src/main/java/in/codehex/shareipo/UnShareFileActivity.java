@@ -15,6 +15,7 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.TextView;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -112,7 +113,8 @@ public class UnShareFileActivity extends AppCompatActivity {
         public void onBindViewHolder(FileViewHolder holder, int position) {
             final FileItem fileItem = fileItemList.get(position);
 
-            holder.file.setText(fileItem.getFile());
+            File file = new File(fileItem.getFile());
+            holder.file.setText(file.getName());
             holder.select.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
