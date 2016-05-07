@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -152,11 +153,13 @@ public class ShareActivity extends AppCompatActivity implements View.OnClickList
                     dos.writeUTF(name);
                     dos.writeUTF(mac);
                     dos.writeUTF(files);
-                    socket.close();
                     for (int i = 0; i < fileList.size(); i++)
                         shareItemList.add(new FileItem(deviceItemList.get(pos).getUserName(),
                                 deviceItemList.get(pos).getDeviceAddress(), fileList.get(i)));
                     databaseHandler.addShareFiles(shareItemList);
+                    dos.flush();
+                    dos.close();
+                    socket.close();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -192,13 +195,23 @@ public class ShareActivity extends AppCompatActivity implements View.OnClickList
                                 deviceItemList.add(pos, new DeviceItem(clients.get(pos).getDevice(),
                                         clients.get(pos).getHWAddr(), clients.get(pos).getIpAddr(),
                                         name, dp, false));
+                                dos.flush();
+                                dos.close();
+                                dis.close();
                                 socket.close();
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
                         }
                     }.start();
-                    adapter.notifyDataSetChanged();
+                    final Handler handler = new Handler();
+                    handler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            adapter.notifyDataSetChanged();
+                            handler.postDelayed(this, 1000);
+                        }
+                    }, 1000);
                 }
             }
         });

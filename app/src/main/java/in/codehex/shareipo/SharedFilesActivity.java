@@ -123,10 +123,15 @@ public class SharedFilesActivity extends AppCompatActivity {
                                 dos.writeUTF(path);
                                 DataInputStream dis = new DataInputStream(socket.getInputStream());
                                 int size = dis.readInt();
+                                File directory = new File(Environment.getExternalStorageDirectory()
+                                        + File.separator + "SHAREipo" + File.separator);
+                                File fileData;
+                                if (directory.exists() || directory.mkdir())
+                                    fileData = new File(directory, file.getName());
+                                else fileData = new File(Environment.getExternalStorageDirectory()
+                                        + File.separator, file.getName());
                                 FileOutputStream fileOutputStream =
-                                        new FileOutputStream(Environment
-                                                .getExternalStorageDirectory()
-                                                + File.separator + file.getName());
+                                        new FileOutputStream(fileData);
                                 InputStream inputStream = socket.getInputStream();
                                 byte[] buffer = new byte[1024];
                                 ByteArrayOutputStream byteArrayOutputStream = new
@@ -141,8 +146,14 @@ public class SharedFilesActivity extends AppCompatActivity {
                                 while ((data = inputStream.read()) != -1)
                                     byteArrayOutputStream.write(data);
                                 fileOutputStream.write(byteArrayOutputStream.toByteArray());
-                                inputStream.close();
+                                dos.flush();
+                                dos.close();
+                                dis.close();
+                                fileOutputStream.flush();
                                 fileOutputStream.close();
+                                inputStream.close();
+                                byteArrayOutputStream.flush();
+                                byteArrayOutputStream.close();
                                 socket.close();
                             } catch (Exception e) {
                                 e.printStackTrace();

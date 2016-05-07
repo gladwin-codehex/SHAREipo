@@ -183,7 +183,11 @@ public class MainActivity extends AppCompatActivity {
                         DataOutputStream dos = new DataOutputStream(clientSocket.getOutputStream());
                         dos.writeUTF(userPreferences.getString("name", null));
                         dos.writeUTF(String.valueOf(userPreferences.getInt("img_id", 0)));
+                        dos.flush();
+                        dos.close();
                     }
+                    dis.close();
+                    clientSocket.close();
                 }
             } catch (IOException e) {
                 e.printStackTrace();
@@ -210,6 +214,8 @@ public class MainActivity extends AppCompatActivity {
                     for (int i = 0; i < items.size(); i++)
                         sharedItemList.add(new FileItem(name, mac, items.get(i)));
                     databaseHandler.addSharedFiles(sharedItemList);
+                    dis.close();
+                    clientSocket.close();
                 }
             } catch (IOException e) {
                 e.printStackTrace();
@@ -241,6 +247,10 @@ public class MainActivity extends AppCompatActivity {
                     while ((read = fileInputStream.read(buffer, 0, 1024)) > 0) {
                         outputStream.write(buffer, 0, read);
                     }
+                    dis.close();
+                    dos.flush();
+                    dos.close();
+                    fileInputStream.close();
                     outputStream.flush();
                     outputStream.close();
                     clientSocket.close();
