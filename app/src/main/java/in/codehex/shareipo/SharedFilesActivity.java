@@ -2,6 +2,7 @@ package in.codehex.shareipo;
 
 import org.apache.commons.io.output.ByteArrayOutputStream;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -15,6 +16,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -37,6 +39,7 @@ public class SharedFilesActivity extends AppCompatActivity {
     DatabaseHandler databaseHandler;
     List<FileItem> fileItemList;
     FileAdapter adapter;
+    ProgressDialog mProgressDialog;
     Intent intent;
 
     static int getChunk(InputStream inputStr, ByteArrayOutputStream bytes, byte[] buffer) throws
@@ -68,6 +71,7 @@ public class SharedFilesActivity extends AppCompatActivity {
         databaseHandler = new DatabaseHandler(this);
         fileItemList = new ArrayList<>();
         adapter = new FileAdapter(this, fileItemList);
+        mProgressDialog = new ProgressDialog(this);
     }
 
     /**
@@ -78,12 +82,42 @@ public class SharedFilesActivity extends AppCompatActivity {
         if (getSupportActionBar() != null)
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        mProgressDialog.setMessage("Downloading file..");
+        mProgressDialog.setCancelable(false);
+        mProgressDialog.setIndeterminate(true);
+
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
 
         fileItemList.addAll(databaseHandler.getSharedFileList());
         adapter.notifyDataSetChanged();
+    }
+
+    /**
+     * Display progress bar if it is not being shown.
+     */
+    private void showProgressDialog() {
+        if (!mProgressDialog.isShowing()) {
+            mProgressDialog.show();
+        }
+    }
+
+    /**
+     * Hide progress bar if it being displayed.
+     */
+    private void hideProgressDialog() {
+        if (mProgressDialog.isShowing()) {
+            mProgressDialog.dismiss();
+        }
+    }
+
+    /**
+     * Hide progress dialog and then display toast
+     */
+    private void downloadSuccess() {
+        hideProgressDialog();
+        Toast.makeText(this, "File download success!", Toast.LENGTH_SHORT).show();
     }
 
     private class FileAdapter extends RecyclerView.Adapter<FileAdapter.FileViewHolder> {
@@ -112,6 +146,7 @@ public class SharedFilesActivity extends AppCompatActivity {
             holder.setClickListener(new ItemClickListener() {
                 @Override
                 public void onClick(View view, int position, boolean isLongClick) {
+                    showProgressDialog();
                     new Thread() {
                         @Override
                         public void run() {
@@ -155,6 +190,7 @@ public class SharedFilesActivity extends AppCompatActivity {
                                 byteArrayOutputStream.flush();
                                 byteArrayOutputStream.close();
                                 socket.close();
+                                downloadSuccess();
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
