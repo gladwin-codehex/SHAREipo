@@ -249,13 +249,6 @@ public class MainActivity extends AppCompatActivity {
                 ServerSocket socket = new ServerSocket(8082);
                 while (true) {
                     Socket clientSocket = socket.accept();
-                    MainActivity.this.runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            Toast.makeText(MainActivity.this,
-                                    "File is being transferred..", Toast.LENGTH_SHORT).show();
-                        }
-                    });
                     DataInputStream dis = new DataInputStream(clientSocket.getInputStream());
                     String mac = dis.readUTF();
                     String path = dis.readUTF();
@@ -270,6 +263,13 @@ public class MainActivity extends AppCompatActivity {
                     }
                     DataOutputStream dos = new DataOutputStream(clientSocket.getOutputStream());
                     if (isAvailable) {
+                        MainActivity.this.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(MainActivity.this,
+                                        "File is being transferred..", Toast.LENGTH_SHORT).show();
+                            }
+                        });
                         File file = new File(path);
                         int size = (int) (file.length());
                         dos.writeInt(0);
@@ -286,6 +286,14 @@ public class MainActivity extends AppCompatActivity {
                         outputStream.close();
                     } else {
                         dos.writeInt(1);
+                        MainActivity.this.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(MainActivity.this,
+                                        "Someone is trying to access unshared file",
+                                        Toast.LENGTH_SHORT).show();
+                            }
+                        });
                     }
                     dis.close();
                     dos.flush();

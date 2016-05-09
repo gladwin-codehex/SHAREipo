@@ -207,11 +207,10 @@ public class SharedFilesActivity extends AppCompatActivity {
         hideProgressDialog();
         Toast.makeText(this, "File download success", Toast.LENGTH_SHORT).show();
         intent = new Intent(Intent.ACTION_VIEW);
-        Uri uri = Uri.parse(file.getPath());
         Uri fileUri = Uri.fromFile(file);
         String fileExtension = MimeTypeMap.getFileExtensionFromUrl(fileUri.toString());
         String mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(fileExtension);
-        intent.setDataAndType(uri, mimeType);
+        intent.setDataAndType(fileUri, mimeType);
         startActivity(intent);
     }
 
