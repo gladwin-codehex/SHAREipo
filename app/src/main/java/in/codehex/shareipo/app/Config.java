@@ -8,6 +8,9 @@ public class Config {
     public static final String PREF_USER = "user";
     public static final int REQUEST_FILE_CODE = 27;
 
+    // increase it if the device is not getting listed
+    public static final int NETWORK_TIMEOUT = 200;
+
     public static final String DB_NAME = "shareipo";
     public static final int DB_VERSION = 1;
 

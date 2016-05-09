@@ -1,7 +1,9 @@
 package in.codehex.shareipo;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.content.IntentCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -14,6 +16,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -31,8 +34,9 @@ public class UnShareFileActivity extends AppCompatActivity {
     List<FileItem> fileItemList;
     List<Integer> integerList;
     FileAdapter adapter;
+    Intent mIntent;
     String user;
-    boolean isUserFile;
+    boolean isUserFile, isUnShared;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,14 +84,27 @@ public class UnShareFileActivity extends AppCompatActivity {
             fileItemList.addAll(databaseHandler.getShareFileList());
         adapter.notifyDataSetChanged();
 
+        if (fileItemList.isEmpty())
+            Toast.makeText(UnShareFileActivity.this,
+                    "You haven't shared any file", Toast.LENGTH_SHORT).show();
+
         btnUnShare.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 for (int i = 0; i < fileItemList.size(); i++) {
-                    if (fileItemList.get(i).isSelected())
+                    if (fileItemList.get(i).isSelected()) {
                         integerList.add(fileItemList.get(i).getId());
+                        isUnShared = true;
+                    }
                 }
-                databaseHandler.removeShareFiles(integerList);
+                if (isUnShared) {
+                    databaseHandler.removeShareFiles(integerList);
+                    mIntent = new Intent(UnShareFileActivity.this, MainActivity.class);
+                    mIntent.addFlags(IntentCompat.FLAG_ACTIVITY_CLEAR_TASK |
+                            Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(mIntent);
+                } else Toast.makeText(UnShareFileActivity.this,
+                        "No file is selected", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -115,6 +132,7 @@ public class UnShareFileActivity extends AppCompatActivity {
 
             File file = new File(fileItem.getFile());
             holder.file.setText(file.getName());
+            holder.name.setText(fileItem.getUser());
             holder.select.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -133,12 +151,13 @@ public class UnShareFileActivity extends AppCompatActivity {
 
         protected class FileViewHolder extends RecyclerView.ViewHolder {
 
-            private TextView file;
+            private TextView file, name;
             private CheckBox select;
 
             public FileViewHolder(View view) {
                 super(view);
                 file = (TextView) view.findViewById(R.id.file);
+                name = (TextView) view.findViewById(R.id.name);
                 select = (CheckBox) view.findViewById(R.id.select);
             }
         }

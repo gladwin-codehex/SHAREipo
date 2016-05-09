@@ -18,6 +18,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -42,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
     Intent intent;
     SharedPreferences userPreferences;
     ArrayList<String> fileList;
-    List<FileItem> sharedItemList;
+    List<FileItem> sharedItemList, mFileItemList;
     DatabaseHandler databaseHandler;
     WifiManager wifiManager;
     WifiInfo info;
@@ -111,6 +112,7 @@ public class MainActivity extends AppCompatActivity {
         userPreferences = getSharedPreferences(Config.PREF_USER, MODE_PRIVATE);
         databaseHandler = new DatabaseHandler(this);
         fileList = new ArrayList<>();
+        mFileItemList = new ArrayList<>();
         sharedItemList = new ArrayList<>();
         wifiManager = (WifiManager) this.getSystemService(Context.WIFI_SERVICE);
         info = wifiManager.getConnectionInfo();
@@ -160,6 +162,9 @@ public class MainActivity extends AppCompatActivity {
         startServer();
     }
 
+    /**
+     * Start all the background server sockets.
+     */
     private void startServer() {
         new Thread(new Profile()).start();
         new Thread(new SharedFiles()).start();
@@ -177,16 +182,19 @@ public class MainActivity extends AppCompatActivity {
                 ServerSocket socket = new ServerSocket(8080);
                 while (true) {
                     Socket clientSocket = socket.accept();
-                    DataInputStream dis = new DataInputStream(clientSocket.getInputStream());
-                    String msg = dis.readUTF();
-                    if (msg.equals("profile")) {
-                        DataOutputStream dos = new DataOutputStream(clientSocket.getOutputStream());
-                        dos.writeUTF(userPreferences.getString("name", null));
-                        dos.writeUTF(String.valueOf(userPreferences.getInt("img_id", 0)));
-                        dos.flush();
-                        dos.close();
-                    }
-                    dis.close();
+                    MainActivity.this.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(MainActivity.this,
+                                    "Profile info has been shared", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                    DataOutputStream dos = new DataOutputStream(clientSocket.getOutputStream());
+                    dos.writeUTF(userPreferences.getString("name", null));
+                    dos.writeUTF(String.valueOf(userPreferences.getInt("img_id", 0)));
+                    dos.writeUTF(info.getMacAddress());
+                    dos.flush();
+                    dos.close();
                     clientSocket.close();
                 }
             } catch (IOException e) {
@@ -206,6 +214,13 @@ public class MainActivity extends AppCompatActivity {
                 ServerSocket socket = new ServerSocket(8081);
                 while (true) {
                     Socket clientSocket = socket.accept();
+                    MainActivity.this.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(MainActivity.this,
+                                    "A file has been shared with you", Toast.LENGTH_SHORT).show();
+                        }
+                    });
                     DataInputStream dis = new DataInputStream(clientSocket.getInputStream());
                     String name = dis.readUTF();
                     String mac = dis.readUTF();
@@ -234,25 +249,46 @@ public class MainActivity extends AppCompatActivity {
                 ServerSocket socket = new ServerSocket(8082);
                 while (true) {
                     Socket clientSocket = socket.accept();
+                    MainActivity.this.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(MainActivity.this,
+                                    "File is being transferred..", Toast.LENGTH_SHORT).show();
+                        }
+                    });
                     DataInputStream dis = new DataInputStream(clientSocket.getInputStream());
+                    String mac = dis.readUTF();
                     String path = dis.readUTF();
+                    mFileItemList.addAll(databaseHandler.getShareUserFileList(mac));
+                    boolean isAvailable = false;
+                    for (int i = 0; i < mFileItemList.size(); i++) {
+                        if (mFileItemList.get(i).getFile().equals(path)) {
+                            isAvailable = true;
+                            break;
+                        } else isAvailable = false;
+                    }
                     DataOutputStream dos = new DataOutputStream(clientSocket.getOutputStream());
-                    File file = new File(path);
-                    int size = (int) (file.length());
-                    dos.writeInt(size);
-                    FileInputStream fileInputStream = new FileInputStream(file);
-                    OutputStream outputStream = clientSocket.getOutputStream();
-                    int read;
-                    byte[] buffer = new byte[1024];
-                    while ((read = fileInputStream.read(buffer, 0, 1024)) > 0) {
-                        outputStream.write(buffer, 0, read);
+                    if (isAvailable) {
+                        File file = new File(path);
+                        int size = (int) (file.length());
+                        dos.writeInt(0);
+                        dos.writeInt(size);
+                        FileInputStream fileInputStream = new FileInputStream(file);
+                        OutputStream outputStream = clientSocket.getOutputStream();
+                        int read;
+                        byte[] buffer = new byte[1024];
+                        while ((read = fileInputStream.read(buffer, 0, 1024)) > 0) {
+                            outputStream.write(buffer, 0, read);
+                        }
+                        fileInputStream.close();
+                        outputStream.flush();
+                        outputStream.close();
+                    } else {
+                        dos.writeInt(1);
                     }
                     dis.close();
                     dos.flush();
                     dos.close();
-                    fileInputStream.close();
-                    outputStream.flush();
-                    outputStream.close();
                     clientSocket.close();
                 }
             } catch (IOException e) {

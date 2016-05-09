@@ -5,42 +5,41 @@ package in.codehex.shareipo.model;
  */
 public class DeviceItem {
 
-    private String deviceName, deviceAddress, deviceIp, userName;
+    private String name, mac, ip;
     private boolean isSelected;
     private int imgId;
 
-    public DeviceItem(String deviceName, String deviceAddress, String deviceIp, String userName,
+    public DeviceItem(String name, String mac, String ip,
                       int imgId, boolean isSelected) {
-        this.deviceName = deviceName;
-        this.deviceAddress = deviceAddress;
-        this.deviceIp = deviceIp;
-        this.userName = userName;
+        this.name = name;
+        this.mac = mac;
+        this.ip = ip;
         this.imgId = imgId;
         this.isSelected = isSelected;
     }
 
-    public String getDeviceName() {
-        return deviceName;
+    public String getName() {
+        return name;
     }
 
-    public void setDeviceName(String deviceName) {
-        this.deviceName = deviceName;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public String getDeviceAddress() {
-        return deviceAddress;
+    public String getMac() {
+        return mac;
     }
 
-    public void setDeviceAddress(String deviceAddress) {
-        this.deviceAddress = deviceAddress;
+    public void setMac(String mac) {
+        this.mac = mac;
     }
 
-    public String getDeviceIp() {
-        return deviceIp;
+    public String getIp() {
+        return ip;
     }
 
-    public void setDeviceIp(String deviceIp) {
-        this.deviceIp = deviceIp;
+    public void setIp(String ip) {
+        this.ip = ip;
     }
 
     public boolean isSelected() {
@@ -49,14 +48,6 @@ public class DeviceItem {
 
     public void setSelected(boolean isSelected) {
         this.isSelected = isSelected;
-    }
-
-    public String getUserName() {
-        return userName;
-    }
-
-    public void setUserName(String userName) {
-        this.userName = userName;
     }
 
     public int getImgId() {
