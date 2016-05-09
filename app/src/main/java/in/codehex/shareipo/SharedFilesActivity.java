@@ -293,6 +293,7 @@ public class SharedFilesActivity extends AppCompatActivity {
                             SharedFilesActivity.this.runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
+                                    hideProgressDialog();
                                     Toast.makeText(SharedFilesActivity.this,
                                             file.getName() + " is not shared with you anymore",
                                             Toast.LENGTH_SHORT).show();
