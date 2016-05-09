@@ -122,7 +122,6 @@ public class SharedFilesActivity extends AppCompatActivity {
     private void scan() {
         isLoaded = false;
         int ipAddress = info.getIpAddress();
-        fileItemList.clear();
         final String ip = String.format(Locale.getDefault(), "%d.%d.%d.%d",
                 (ipAddress & 0xff), (ipAddress >> 8 & 0xff),
                 (ipAddress >> 16 & 0xff), (ipAddress >> 24 & 0xff));
@@ -279,21 +278,17 @@ public class SharedFilesActivity extends AppCompatActivity {
                             while ((data = inputStream.read()) != -1)
                                 byteArrayOutputStream.write(data);
                             fileOutputStream.write(byteArrayOutputStream.toByteArray());
-                            dos.flush();
-                            dos.close();
-                            dis.close();
-                            fileOutputStream.flush();
-                            fileOutputStream.close();
-                            inputStream.close();
-                            byteArrayOutputStream.flush();
-                            byteArrayOutputStream.close();
-                            socket.close();
                             SharedFilesActivity.this.runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
                                     downloadSuccess(fileData);
                                 }
                             });
+                            fileOutputStream.flush();
+                            fileOutputStream.close();
+                            inputStream.close();
+                            byteArrayOutputStream.flush();
+                            byteArrayOutputStream.close();
                         } else if (error == 1) {
                             SharedFilesActivity.this.runOnUiThread(new Runnable() {
                                 @Override
@@ -308,6 +303,10 @@ public class SharedFilesActivity extends AppCompatActivity {
                                 }
                             });
                         }
+                        dos.flush();
+                        dos.close();
+                        dis.close();
+                        socket.close();
                     } catch (Exception e) {
                         SharedFilesActivity.this.runOnUiThread(new Runnable() {
                             @Override

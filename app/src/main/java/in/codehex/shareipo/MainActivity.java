@@ -259,13 +259,14 @@ public class MainActivity extends AppCompatActivity {
                     DataInputStream dis = new DataInputStream(clientSocket.getInputStream());
                     String mac = dis.readUTF();
                     String path = dis.readUTF();
+                    mFileItemList.clear();
                     mFileItemList.addAll(databaseHandler.getShareUserFileList(mac));
                     boolean isAvailable = false;
                     for (int i = 0; i < mFileItemList.size(); i++) {
                         if (mFileItemList.get(i).getFile().equals(path)) {
                             isAvailable = true;
                             break;
-                        } else isAvailable = false;
+                        }
                     }
                     DataOutputStream dos = new DataOutputStream(clientSocket.getOutputStream());
                     if (isAvailable) {

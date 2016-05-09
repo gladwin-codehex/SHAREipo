@@ -43,13 +43,16 @@
 
         </android.support.design.widget.TextInputLayout>
 
-        <TableLayout
+        <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:orientation="vertical"
                 android:layout_margin="@dimen/primary_margin">
 
-            <TableRow
+            <LinearLayout
+                    android:orientation="horizontal"
                     android:layout_width="match_parent"
+                    android:weightSum="3"
                     android:layout_height="wrap_content">
 
                 <ImageButton
@@ -57,6 +60,8 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
+                        android:layout_margin="@dimen/lite"
+                        android:scaleType="fitCenter"
                         android:adjustViewBounds="true"
                         android:background="?attr/selectableItemBackground"
                         android:contentDescription="@string/desc_profile_icon"
@@ -67,6 +72,8 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
+                        android:scaleType="fitCenter"
+                        android:layout_margin="@dimen/lite"
                         android:adjustViewBounds="true"
                         android:background="?attr/selectableItemBackground"
                         android:contentDescription="@string/desc_profile_icon"
@@ -77,22 +84,28 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
+                        android:scaleType="fitCenter"
+                        android:layout_margin="@dimen/lite"
                         android:adjustViewBounds="true"
                         android:background="?attr/selectableItemBackground"
                         android:contentDescription="@string/desc_profile_icon"
                         android:src="@drawable/male3"/>
 
-            </TableRow>
+            </LinearLayout>
 
-            <TableRow
+            <LinearLayout
+                    android:orientation="horizontal"
                     android:layout_width="match_parent"
+                    android:weightSum="3"
                     android:layout_height="wrap_content">
 
                 <ImageButton
                         android:id="@+id/female1"
                         android:layout_width="0dp"
+                        android:layout_margin="@dimen/lite"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
+                        android:scaleType="fitCenter"
                         android:adjustViewBounds="true"
                         android:background="?attr/selectableItemBackground"
                         android:contentDescription="@string/desc_profile_icon"
@@ -103,6 +116,8 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
+                        android:layout_margin="@dimen/lite"
+                        android:scaleType="fitCenter"
                         android:adjustViewBounds="true"
                         android:background="?attr/selectableItemBackground"
                         android:contentDescription="@string/desc_profile_icon"
@@ -113,14 +128,16 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
+                        android:scaleType="fitCenter"
+                        android:layout_margin="@dimen/lite"
                         android:adjustViewBounds="true"
                         android:background="?attr/selectableItemBackground"
                         android:contentDescription="@string/desc_profile_icon"
                         android:src="@drawable/female3"/>
 
-            </TableRow>
+            </LinearLayout>
 
-        </TableLayout>
+        </LinearLayout>
 
         <Button
                 android:id="@+id/save"
