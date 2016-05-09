@@ -122,6 +122,7 @@ public class SharedFilesActivity extends AppCompatActivity {
     private void scan() {
         isLoaded = false;
         int ipAddress = info.getIpAddress();
+        fileItemList.clear();
         final String ip = String.format(Locale.getDefault(), "%d.%d.%d.%d",
                 (ipAddress & 0xff), (ipAddress >> 8 & 0xff),
                 (ipAddress >> 16 & 0xff), (ipAddress >> 24 & 0xff));
@@ -360,6 +361,7 @@ public class SharedFilesActivity extends AppCompatActivity {
                         showProgressDialog();
                         downloadFile(file, fileItem);
                     } else if (isAvailable) {
+                        isAvailable = false;
                         showProgressDialog();
                         downloadFile(file, fileItem);
                     } else Toast.makeText(SharedFilesActivity.this,

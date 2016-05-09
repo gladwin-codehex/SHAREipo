@@ -82,8 +82,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         Cursor cursor = db.rawQuery(selectQuery, null);
         if (cursor.moveToFirst()) {
             do {
-                fileItemList.add(new FileItem(cursor.getString(1), cursor.getString(2),
-                        cursor.getString(3), false));
+                fileItemList.add(new FileItem(cursor.getInt(0), cursor.getString(1),
+                        cursor.getString(2), cursor.getString(3), false));
             } while (cursor.moveToNext());
             cursor.close();
             db.close();

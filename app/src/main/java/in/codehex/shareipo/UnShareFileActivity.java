@@ -127,7 +127,7 @@ public class UnShareFileActivity extends AppCompatActivity {
         }
 
         @Override
-        public void onBindViewHolder(FileViewHolder holder, int position) {
+        public void onBindViewHolder(final FileViewHolder holder, int position) {
             final FileItem fileItem = fileItemList.get(position);
 
             File file = new File(fileItem.getFile());
@@ -139,7 +139,7 @@ public class UnShareFileActivity extends AppCompatActivity {
                     if (isChecked)
                         fileItem.setSelected(true);
                     else fileItem.setSelected(false);
-                    adapter.notifyDataSetChanged();
+                    holder.select.setChecked(fileItem.isSelected());
                 }
             });
         }
