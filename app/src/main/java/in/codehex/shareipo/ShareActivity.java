@@ -107,7 +107,7 @@ public class ShareActivity extends AppCompatActivity implements View.OnClickList
 
         deviceItemList = new ArrayList<>();
         shareItemList = new ArrayList<>();
-        fileList = (ArrayList<String>) getIntent().getSerializableExtra("file");
+        fileList = new ArrayList<>();
         databaseHandler = new DatabaseHandler(this);
         userPreferences = getSharedPreferences(Config.PREF_USER, MODE_PRIVATE);
         adapter = new DeviceAdapter(this, deviceItemList);
@@ -146,6 +146,9 @@ public class ShareActivity extends AppCompatActivity implements View.OnClickList
                 scan();
             }
         });
+
+        fileList.clear();
+        fileList = (ArrayList<String>) getIntent().getSerializableExtra("file");
     }
 
     /**
