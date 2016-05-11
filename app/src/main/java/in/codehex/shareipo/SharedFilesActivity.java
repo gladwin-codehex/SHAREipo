@@ -4,6 +4,7 @@ import org.apache.commons.io.output.ByteArrayOutputStream;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.net.wifi.WifiInfo;
@@ -99,8 +100,15 @@ public class SharedFilesActivity extends AppCompatActivity {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         mProgressDialog.setMessage("Downloading file..");
-        mProgressDialog.setCancelable(false);
         mProgressDialog.setIndeterminate(true);
+        mProgressDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
+            @Override
+            public void onCancel(DialogInterface dialog) {
+                dialog.dismiss();
+                Toast.makeText(SharedFilesActivity.this,
+                        "Downloading..", Toast.LENGTH_LONG).show();
+            }
+        });
 
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -239,7 +247,7 @@ public class SharedFilesActivity extends AppCompatActivity {
                 break;
             }
         }
-        if (ip != null)
+        if (ip != null) {
             new Thread() {
                 @Override
                 public void run() {
@@ -254,7 +262,8 @@ public class SharedFilesActivity extends AppCompatActivity {
                         int error = dis.readInt();
                         if (error == 0) {
                             int size = dis.readInt();
-                            final File directory = new File(Environment.getExternalStorageDirectory()
+                            final File directory = new File(Environment
+                                    .getExternalStorageDirectory()
                                     + File.separator + "SHAREipo" + File.separator);
                             final File fileData;
                             if (directory.exists() || directory.mkdir())
@@ -318,7 +327,7 @@ public class SharedFilesActivity extends AppCompatActivity {
                     }
                 }
             }.start();
-        else Toast.makeText(SharedFilesActivity.this,
+        } else Toast.makeText(SharedFilesActivity.this,
                 fileItem.getUser() + " is not available", Toast.LENGTH_SHORT).show();
     }
 
